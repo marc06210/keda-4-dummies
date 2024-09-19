@@ -1,0 +1,33 @@
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: postgres-auth
+  namespace: mgu-keda  # The namespace where your ScaledObject is deployed
+spec:
+  secretTargetRef:
+    - parameter: password     # the parameter name required by the trigger
+      name: postgres-secret   # the name of the source secret store (beware of namespace)
+      key: POSTGRES_PASSWORD  # the name of the secret parameter
+
+---
+
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: db-biz-batch
+  namespace: mgu-keda
+spec:
+  scaleTargetRef:
+    name: biz-batch
+  triggers:
+    - type: postgresql
+      metadata:
+        host: db.mgu-keda.svc
+        userName: "keda"
+        port: "5432"
+        dbName: keda
+        sslmode: disable
+        query: "SELECT ceil(COUNT(*)::decimal / 16) FROM orders WHERE status=0;"
+        targetQueryValue: "1.1"
+      authenticationRef:
+        name: postgres-auth

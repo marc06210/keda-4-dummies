@@ -1,0 +1,15 @@
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: cron-webapp
+  namespace: mgu-keda
+spec:
+  scaleTargetRef:
+    name: webapp
+  triggers:
+    - type: cron
+      metadata:
+        timezone: Europe/Paris
+        start: 0 8 * * *
+        end: 30 11 * * *
+        desiredReplicas: "1"

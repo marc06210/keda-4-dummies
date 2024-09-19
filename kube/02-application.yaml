@@ -1,0 +1,73 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: webapp
+  namespace: mgu-keda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: webapp
+  template:
+    metadata:
+      labels:
+        app: webapp
+    spec:
+      containers:
+        - name: webapp
+          image: mgu-keda/website
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 8080
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: webapp
+  namespace: mgu-keda
+spec:
+  ports:
+    - port: 8080
+      name: http
+  selector:
+    app: webapp
+
+---
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: biz-batch
+  namespace: mgu-keda
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: biz-batch
+  template:
+    metadata:
+      labels:
+        app: biz-batch
+    spec:
+      containers:
+        - name: biz-batch
+          image: mgu-keda/service
+          imagePullPolicy: IfNotPresent
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "docker"
+            - name: SPRING_DATASOURCE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-secret
+                  key: POSTGRES_PASSWORD

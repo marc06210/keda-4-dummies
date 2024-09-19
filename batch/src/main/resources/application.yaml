@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: website
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: validate
+
+  datasource:
+    username: keda
+    password: password
+    url: jdbc:postgresql://localhost:5433/keda
+
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+  datasource:
+    url: jdbc:postgresql://db:5432/keda

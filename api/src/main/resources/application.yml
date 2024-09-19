@@ -1,0 +1,23 @@
+spring:
+  application:
+    name: website
+  jpa:
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
+    hibernate:
+      ddl-auto: update
+
+  datasource:
+    username: keda
+    password: password
+    url: jdbc:postgresql://localhost:5433/keda
+logging:
+  level:
+    '[org.springframework.web]': DEBUG
+---
+spring:
+  config:
+    activate:
+      on-profile: docker
+
+  datasource:
+    url: jdbc:postgresql://db:5432/keda
