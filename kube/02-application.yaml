@@ -2,21 +2,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: webapp
+  name: api
   namespace: mgu-keda
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: webapp
+      app: api
   template:
     metadata:
       labels:
-        app: webapp
+        app: api
     spec:
       containers:
-        - name: webapp
-          image: mgu-keda/website
+        - name: api
+          image: mgu-keda/api
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8080
@@ -33,14 +33,14 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: webapp
+  name: api
   namespace: mgu-keda
 spec:
   ports:
     - port: 8080
       name: http
   selector:
-    app: webapp
+    app: api
 
 ---
 
@@ -61,7 +61,7 @@ spec:
     spec:
       containers:
         - name: biz-batch
-          image: mgu-keda/service
+          image: mgu-keda/batch
           imagePullPolicy: IfNotPresent
           env:
             - name: SPRING_PROFILES_ACTIVE

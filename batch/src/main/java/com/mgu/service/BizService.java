@@ -1,9 +1,7 @@
 package com.mgu.service;
 
-import com.mgu.service.db.Order;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class BizService {
@@ -14,6 +12,7 @@ public class BizService {
         this.orderService = orderService;
     }
 
+    @Scheduled(fixedDelay = 1000)
     public void process() {
         orderService.getNewOrders().parallelStream()
                 .forEach(orderService::processOrder);

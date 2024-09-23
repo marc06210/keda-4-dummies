@@ -1,11 +1,11 @@
 apiVersion: keda.sh/v1alpha1
 kind: ScaledObject
 metadata:
-  name: cron-webapp
+  name: cron-api
   namespace: mgu-keda
 spec:
   scaleTargetRef:
-    name: webapp
+    name: api
   triggers:
     - type: cron
       metadata:
